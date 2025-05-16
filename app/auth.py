@@ -3,7 +3,7 @@ import hashlib
 import hmac
 import secrets
 
-HMAC_SECRET_KEY = b'super-secret-hmac-key'
+HMAC_SECRET_KEY = os.environ["HMAC_SECRET_KEY"].encode()
 
 
 def generate_salt() -> bytes:
@@ -11,7 +11,7 @@ def generate_salt() -> bytes:
 
 
 def hash_password(password: str, salt: bytes) -> bytes:
-    return hashlib.pbkdf2_hmac('sha256', password.encode(), salt, 100_000)
+    return hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 100_000)
 
 
 def verify_password(password: str, salt: bytes, stored_hash: bytes) -> bool:
