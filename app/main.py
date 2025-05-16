@@ -12,10 +12,19 @@ from app.auth import (
     verify_hmac,
 )
 
+from fastapi.middleware.cors import CORSMiddleware
+
 # Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:4200"],  # 🚨 puedes usar ["*"] en pruebas, pero no en producción
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
