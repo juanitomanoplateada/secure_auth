@@ -12,7 +12,7 @@ from app.auth import (
     verify_hmac,
 )
 
-Base.metadata.create_all(bind=engine)
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
