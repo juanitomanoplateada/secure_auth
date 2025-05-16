@@ -76,3 +76,10 @@ def login(req: LoginRequest, db: Session=Depends(get_db)):
         raise HTTPException(status_code=401, detail="Contraseña incorrecta")
 
     return {"message": "Inicio de sesión exitoso"}
+
+
+@app.post("/generate-hmac")
+def generate_hmac_endpoint(req: LoginRequest):
+    message = f"{req.username}:{req.password}"
+    return {"hmac_token": generate_hmac(message)}
+
