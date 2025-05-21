@@ -20,15 +20,68 @@ SecureAuth es un sistema de autenticación backend desarrollado con **FastAPI**,
 | Auth segura  | HMAC + SAL |
 | Servidor     | Uvicorn    |
 | Entorno      | Python 3.11 (Docker) |
-| Frontend     | Angular 18 (en repositorio separado) |
+| Frontend     | Angular 18 (repositorio separado) |
 
 ---
 
-## 🔒 Características de seguridad
+## 📁 Estructura del proyecto
 
-- Las contraseñas **nunca se almacenan ni transmiten en texto plano**.
-- Cada contraseña es protegida con una **sal única de 16 bytes**.
-- Las peticiones de login se validan con un **token HMAC** para garantizar que no hayan sido alteradas.
-- Claves HMAC y URL de la base de datos se gestionan por medio de **variables de entorno**.
+```text
+.
+├── auth.py            # Funciones de hashing, sal y HMAC
+├── main.py            # API REST con endpoints de registro y login
+├── models.py          # Modelo ORM de usuario
+├── database.py        # Configuración de SQLAlchemy y conexión
+├── Dockerfile         # Imagen para despliegue en Railway
+├── requirements.txt   # Dependencias del proyecto
+└── README.md          # Documentación
+```
 
 ---
+
+## 🔐 Endpoints principales
+
+- `POST /register` – Registro seguro con hash + sal
+- `POST /login` – Inicio de sesión validando HMAC y hash
+- `POST /generate-hmac` – Genera HMAC para validación desde frontend
+- `GET /` – Verificación de estado del servidor
+
+---
+
+## 🔒 Seguridad aplicada
+
+- Cada contraseña se transforma en hash mediante `PBKDF2-HMAC-SHA256` con 100.000 iteraciones.
+- Cada usuario tiene su propia **sal aleatoria de 16 bytes**.
+- El **token HMAC** asegura la integridad de las credenciales durante el envío.
+- El backend nunca almacena ni transmite contraseñas en texto plano.
+- Variables sensibles como `HMAC_SECRET_KEY` y `DATABASE_URL` se cargan mediante `.env`.
+
+---
+
+## ⚙️ Variables de entorno requeridas
+
+```env
+DATABASE_URL=postgresql://usuario:contraseña@host:puerto/db
+HMAC_SECRET_KEY=kept-you-waiting-huh?
+```
+
+---
+
+## 🐳 Uso con Docker
+
+```bash
+docker build -t secure-auth-backend .
+docker run -e DATABASE_URL=... -e HMAC_SECRET_KEY=... -p 8000:8000 secure-auth-backend
+```
+
+---
+
+## 🧪 Pruebas del backend
+
+Puedes probar los endpoints directamente desde `http://localhost:8000/docs` gracias a la interfaz automática de Swagger.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo los términos de la **MIT License**.
